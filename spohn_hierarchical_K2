@@ -1,1 +1,65 @@
+loadPackage "GameTheory"
+R1 = QQ[x_1..x_12]
+Di = {2,2,2}
+PR = probabilityRing(Di)
+gens PR
+X1 = zeroTensor{2,2,2}
+X2 = zeroTensor{2,2,2}
+X3 = zeroTensor{2,2,2}
+X1#{0,0,0} = 1 ;
+X1#{0,0,1} = 0 ;
+X1#{0,1,0} = 0 ;
+X1#{1,0,0} = 0 ;
+X1#{0,1,1} = 0 ;
+X1#{1,1,1} = 1 ;
+X1#{1,1,0} = 0 ;
+X1#{1,0,1} = 0 ;
+
+X2#{0,0,0} = -1 ;
+X2#{0,0,1} = 0 ;
+X2#{0,1,0} = 0 ;
+X2#{1,0,0} = 0;
+X2#{0,1,1} = 0;
+X2#{1,1,1} = -1; 
+X2#{1,1,0} = 0 ;
+X2#{1,0,1} = 0 ;
+
+X3#{0,0,0} = -1 ;
+X3#{0,0,1} = 0 ;
+X3#{0,1,0} = 0 ; 
+X3#{1,0,0} = 0 ;
+X3#{0,1,1} = 0 ;
+X3#{1,1,1} = -1 ; 
+X3#{1,1,0} = 0 ;
+X3#{1,0,1} = 0 ;
+R = R1**PR
+gens R
+X = {X1, X2, X3};
+SI = spohnIdeal(PR, X)
+
+
+f_1 = p_{0,0,0} - x_1*x_5*x_9;
+f_2 = p_{1,0,0} - x_3*x_7*x_9;
+f_3 = p_{0,1,0} - x_2*x_5*x_11;
+f_4 = p_{0,0,1} - x_1*x_6*x_10;
+f_5 = p_{1,1,0} - x_4*x_7*x_11;
+f_6 = p_{1,0,1} - x_3*x_8*x_10;
+f_7 = p_{1,1,1} - x_4*x_8*x_12;
+f_8 = p_{0,1,1} - x_2*x_6*x_12;
+I = ideal(f_1, f_2, f_3, f_4, f_5, f_6, f_7, f_8); 
+J = eliminate(I, {x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10, x_11, x_12}); 
+J' = sub(J, PR)
+
+Intersec = J' + SI
+dim Intersec 
+minimalPrimes Intersec
+W = ideal (sum(gens PR))* ideal(product(gens PR))
+
+
+FinalId = saturate(Intersec, W)
+
+dim FinalId
+degree FinalId
+l = minimalPrimes FinalId
+apply(l, i -> (codim i, degree i))
 
